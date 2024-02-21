@@ -1,35 +1,63 @@
 // Write your code here.
 import {Component} from 'react'
 
+import './index.css'
+
+const PLUS_IMAGE =
+  'https://assets.ccbp.in/frontend/react-js/faqs-plus-icon-img.png'
+const MINUS_IMAGE =
+  'https://assets.ccbp.in/frontend/react-js/faqs-minus-icon-img.png'
+
 class FaqItem extends Component {
   state = {
-    showAnswer: false,
+    isActive: false,
   }
 
-  onClickQuestion = () => {
+  renderAnswer = () => {
+    const {faqDetails} = this.props
+    const {answerText} = faqDetails
+    const {isActive} = this.state
+
+    if (isActive) {
+      return (
+        <div>
+          <hr className="horizontal-line" />
+          <p className="answer">{answerText}</p>
+        </div>
+      )
+    }
+    return null
+  }
+
+  onToggleIsActive = () => {
     this.setState(prevState => ({
-      showAnswer: !prevState.showAnswer,
+      isActive: !prevState.isActive,
     }))
+  }
+
+  renderActiveImage = () => {
+    const {isActive} = this.state
+    const image = isActive ? MINUS_IMAGE : PLUS_IMAGE
+    const altText = isActive ? 'minus' : 'plus'
+
+    return (
+      <button className="button" type="button" onClick={this.onToggleIsActive}>
+        <img className="image" src={image} alt={altText} />
+      </button>
+    )
   }
 
   render() {
     const {faqDetails} = this.props
-    const {showAnswer} = this.state
-    const {questionText, answerText} = faqDetails
-
-    const imgUrl = !showAnswer
-      ? 'https://assets.ccbp.in/frontend/react-js/faqs-plus-icon-img.png'
-      : 'https://assets.ccbp.in/frontend/react-js/faqs-minus-icon-img.png'
-
-    const altText = !showAnswer ? 'plus' : 'minus'
+    const {questionText} = faqDetails
 
     return (
-      <li>
-        <h1>{questionText}</h1>
-        <button type="button" onClick={this.onClickQuestion}>
-          <img src={imgUrl} alt={altText} />
-        </button>
-        <p>{showAnswer && answerText}</p>
+      <li className="faq-item">
+        <div className="question-container">
+          <h1 className="question">{questionText}</h1>
+          {this.renderActiveImage()}
+        </div>
+        {this.renderAnswer()}
       </li>
     )
   }
